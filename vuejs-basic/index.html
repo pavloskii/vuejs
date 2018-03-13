@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+</head>
+
+<body>
+
+    <div id="app">
+        <h1 v-once>{{title}}</h1>
+        <input type="text" v-on:input="changeInput">
+        <p>{{title}} - <a v-bind:href="link">Google</a></p>
+        <hr>
+        <p v-html="finishedLink"></p>
+        <hr>
+        <button v-on:click="increase(2, $event)">Increase by 2</button>
+        <p>{{counter}}</p>
+        <hr>
+        <button v-on:click="counter++">Increase by one</button>
+        <p>{{counter * 2 > 10 ? 'Greater than 10' : 'Smaller then 10'}}</p>
+        <p v-on:mousemove="updateCoordinates">{{x}} / {{y}}</p>
+        <span v-on:mouseover.stop="">DEAD SPOT</span>
+        <hr>
+        <input type="text" v-on:keyup.enter.space="alertMe">
+        <p>Aler me on enter or space</p>
+        <hr>
+        <input type="text" v-model="name">
+        <p>{{name}} - 2 way data binding</p>
+        <hr>
+        <p>{{output}} | {{result()}}</p>
+        <hr>
+        <p>Skratenici vo templejt</p>
+        <button @click="changeLink">Click to change link</button>
+        <a :href="link"></a>
+        <hr>
+        <div 
+        class="demo" 
+        @click="attachRed = !attachRed" 
+        :class="{red: attachRed, blue: !attachRed}"></div>
+        <hr>
+        <div class="demo" :class="divClasses"></div>
+        <hr>
+        <input type="text" v-model="color">
+        <div class="demo" :class="[color, {red: attachRed}]"></div>
+        <hr>
+        <div class="demo" :style="{'background-color': color}"></div>
+        <div class="demo" :style="myStyle"></div>        
+        <input type="text" v-model="width">     
+        <hr>
+        <div class="demo" :style="[myStyle, {height: width + 'px'}]"></div>                
+    </div>
+
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                title: 'Hello World',
+                link: 'http://google.com',
+                finishedLink:'http://google.com', //CSSattacks
+                counter: 0,
+                x:0,
+                y:0,
+                name:'Igor',
+                attachRed: false,
+                color:'green',
+                width:100
+            },
+            computed:{
+                output: function () {
+                    return this.counter > 5 ? 'Greater then 5':'Smaller then 5';
+                },//executes only if the counter changes
+                divClasses: function () {
+                    return {
+                        red: this.attachRed, 
+                        blue: !this.attachRed
+                    }
+                },
+                myStyle: function () {
+                    return {
+                        backgroundColor: this.color,
+                        width: this.width + 'px'
+                    }
+                  }
+            },
+            watch:{
+                counter: function (value) { 
+                    var vm = this;
+                    setTimeout(function() {
+                        vm.counter = 0;
+                    }, 2000);
+                 }
+            },
+            methods: {
+                changeInput: function (event) {
+                    this.title = event.target.value;
+                },
+                increase: function(step, event){
+                    this.counter += step;
+                },
+                updateCoordinates: function (event) {
+                    this.x = event.clientX;
+                    this.y = event.clientY;
+                },
+                alertMe: function () {
+                    alert('Alert!!!');
+                },
+                result: function () {
+                    return this.counter > 5 ? 'Greater then 5':'Smaller then 5'; 
+                },//executes everytime the page changes
+                changeLink: function () {
+                    this.link = 'http://yahoo.com'
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .demo {
+            width: 100px;
+            height: 100px;
+            background-color: gray;
+        }
+        .red {
+            background-color: red;
+        }
+        .blue {
+            background-color: blue;
+        }
+        .green {
+            background-color: green;
+        }
+    </style>
+</body>
+
+</html>
